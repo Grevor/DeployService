@@ -40,8 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConditionalDeployer.cs" />
     <Compile Include="DeploymentModule.cs" />
-    <Compile Include="FileScannerDeployment.cs" />
+    <Compile Include="FileScannerDeployer.cs" />
     <Compile Include="IDeployer.cs" />
     <Compile Include="IDeployHook.cs" />
     <Compile Include="IPCPipe.cs" />

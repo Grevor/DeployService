@@ -16,7 +16,7 @@ namespace Viking.Deployment
         public Version(params int[] parts)
         {
             Parts = new int[parts.Length];
-            parts.CopyTo(parts, 0);
+            parts.CopyTo(Parts, 0);
         }
 
         public override string ToString() => string.Join(".", Parts);

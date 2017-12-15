@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Viking.Deployment
 {
-    public class IPCPipe
+    public class IPCPipe : IDisposable
     {
-        private const string PipeName = "";
+        private const string PipeName = "deploy_confirmation_pipe";
         private BinaryWriter Writer { get; }
         private BinaryReader Reader { get; }
 
@@ -18,14 +14,36 @@ namespace Viking.Deployment
         {
             Stream stream;
             if (server)
-                stream = new NamedPipeServerStream(PipeName, PipeDirection.InOut);
+            {
+                try
+                {
+                    var srv = new NamedPipeServerStream(PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.WriteThrough);
+                    srv.WaitForConnection();
+                    stream = srv;
+                } catch(Exception e)
+                {
+                    stream = null;
+                }
+            }
             else
-                stream = new NamedPipeClientStream(".", PipeName);
-
+            {
+                var client = new NamedPipeClientStream(".", PipeName, PipeDirection.InOut, PipeOptions.WriteThrough);
+                client.Connect();
+                stream = client;
+            }
             Writer = new BinaryWriter(stream);
             Reader = new BinaryReader(stream);
         }
 
         public string ReadString() => Reader.ReadString();
+        public bool ReadBool() => Reader.ReadBoolean();
+
+        public void Send(string str) { Writer.Write(str); Writer.Flush(); }
+        public void Send(bool boolean) => Writer.Write(boolean);
+
+        public void Dispose()
+        {
+            Writer.Close();
+        }
     }
 }

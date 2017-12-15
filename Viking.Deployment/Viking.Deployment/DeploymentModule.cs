@@ -34,7 +34,7 @@ namespace Viking.Deployment
                         return;
                     History.SetVersion(tag, version);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     return;
                 }

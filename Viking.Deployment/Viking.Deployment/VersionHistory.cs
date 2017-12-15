@@ -15,7 +15,7 @@ namespace Viking.Deployment
             ReadFile();
         }
 
-        public Version GetLatestVersion(string tag) => LastVersions.ContainsKey(tag) ? LastVersions[tag] : new Version();
+        public Version GetLatestVersion(string tag) => LastVersions.ContainsKey(tag) ? LastVersions[tag] : new Version("0");
 
         public void SetVersion(string tag, Version version)
         {
@@ -25,6 +25,13 @@ namespace Viking.Deployment
 
         private void ReadFile()
         {
+            var dir = Path.GetDirectoryName(Filename);
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            if (!File.Exists(Filename))
+                File.WriteAllText(Filename, "");
+
             foreach(var line in File.ReadAllLines(Filename))
             {
                 var split = line.Split(':');

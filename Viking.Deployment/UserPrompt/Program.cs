@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viking.Deployment;
 
 namespace UserPrompt
 {
@@ -17,6 +15,13 @@ namespace UserPrompt
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run();
+            var pipe = new IPCPipe(false);
+            while (true)
+            {
+                string msg = pipe.ReadString();
+                var result = MessageBox.Show(msg, "Deployment Prompt", MessageBoxButtons.YesNo);
+                pipe.Send(result == DialogResult.Yes);
+            }
         }
     }
 }

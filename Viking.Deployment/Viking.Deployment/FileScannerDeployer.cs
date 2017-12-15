@@ -1,29 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
 
 namespace Viking.Deployment
 {
-    public class FileScannerDeployment : IDeployer, IDeployHook
+    public class FileScannerDeployer : IDeployer, IDeployHook
     {
         public string Folder { get; }
         private FileSystemWatcher Watcher { get; }
         private TimeSpan GracePeriod { get; }
+        private Timer GraceTimer { get; } = new Timer();
+
+        private object Mutex { get; } = new object();
+        private Version Version { get; set; }
+        private string Tag { get; set; }
 
         public event DeploymentHook DeploymentReady;
 
-        public FileScannerDeployment()
+        public FileScannerDeployer(string folder, TimeSpan gracePeriod)
         {
+            Folder = folder;
+            GracePeriod = gracePeriod;
             Watcher = new FileSystemWatcher(Folder)
             {
                 IncludeSubdirectories = true,
                 EnableRaisingEvents=true,
             };
             Watcher.Created += Created;
+            GraceTimer.Enabled = false;
+            GraceTimer.AutoReset = false;
+            GraceTimer.Interval = GracePeriod.TotalSeconds;
+            GraceTimer.Elapsed += Send;
+        }
+
+        private void Send(object sender, ElapsedEventArgs e)
+        {
+            lock (Mutex)
+            {
+                GraceTimer.Stop();
+                DeploymentReady?.Invoke(Version, Tag);
+            }
         }
 
         private void Created(object sender, FileSystemEventArgs e)
@@ -31,10 +48,19 @@ namespace Viking.Deployment
             var path = e.FullPath;
             if (!Directory.Exists(path))
                 path = Path.GetDirectoryName(path);
-            var vs = Directory.GetParent(path);
+            var vs = new DirectoryInfo(path);
             var version = vs.Name;
             var tags = vs.Parent.Name;
-            DeploymentReady?.Invoke(new Version(version), tags);
+            if (!vs.Parent.Parent.FullName.Equals(Folder))
+                return;
+            lock (Mutex)
+            {
+                Version = new Version(version);
+                Tag = tags;
+                if (GraceTimer.Enabled)
+                    return;
+                GraceTimer.Start();
+            }
         }
 
         public DeploymentResult Deploy(Version version, string tag)
@@ -45,9 +71,6 @@ namespace Viking.Deployment
                 var proc = new Process()
                 {
                     StartInfo = new ProcessStartInfo(Path.GetFullPath(exe))
-                    {
-                        
-                    }
                 };
                 proc.WaitForExit();
                 if (proc.ExitCode != 0)
@@ -58,6 +81,7 @@ namespace Viking.Deployment
 
         public void Initialize()
         {
+            Watcher.EnableRaisingEvents = true;
         }
     }
 }

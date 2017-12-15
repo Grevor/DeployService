@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viking.Deployment", "Viking
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserPrompt", "UserPrompt\UserPrompt.csproj", "{FB5C881C-70D1-4A99-ACDF-025D2FA2051D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viking.DeploymentService", "Viking.DeploymentService\Viking.DeploymentService.csproj", "{439E1F2C-C4B8-4583-BB29-792EF400D09A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary", "TestLibrary\TestLibrary.csproj", "{B2BEFACE-E959-4C48-943C-0370DE930470}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{FB5C881C-70D1-4A99-ACDF-025D2FA2051D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB5C881C-70D1-4A99-ACDF-025D2FA2051D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB5C881C-70D1-4A99-ACDF-025D2FA2051D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{439E1F2C-C4B8-4583-BB29-792EF400D09A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{439E1F2C-C4B8-4583-BB29-792EF400D09A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{439E1F2C-C4B8-4583-BB29-792EF400D09A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{439E1F2C-C4B8-4583-BB29-792EF400D09A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2BEFACE-E959-4C48-943C-0370DE930470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2BEFACE-E959-4C48-943C-0370DE930470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2BEFACE-E959-4C48-943C-0370DE930470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2BEFACE-E959-4C48-943C-0370DE930470}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
